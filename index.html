@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Watchtower: Slavic Nights – hold the tower until dawn</title>
+<meta name="description" content="A one-finger idle tower defense from Slavic folklore. Survive 30 waves of drowners, strzygas and werewolves, face the Zmey at Midnight and grow your stronghold between nights.">
+<meta property="og:title" content="Watchtower: Slavic Nights">
+<meta property="og:description" content="Hold a wooden watchtower against the creatures of Slavic legend until dawn. Free to play in your browser.">
+<meta property="og:image" content="img/og_image.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0b1026">
+<link rel="icon" href="img/app_icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Philosopher:wght@400;700&family=Nunito+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night: #0b1026; --night-2: #121a3a; --night-3: #1b2550;
+    --forest: #1f3b2f; --gold: #f4c542; --gold-soft: #e9c46a; --red: #b8382a; --red-deep: #7c2218;
+    --paper: #f3ead8; --ink: #e9ecf5; --muted: #aab1cc; --line: rgba(244, 197, 66, .28);
+    --radius: 18px; --max: 1120px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  html, body { overflow-x: clip; }
+  body { margin: 0; background: var(--night); color: var(--ink); font: 17px/1.6 'Nunito Sans', system-ui, sans-serif; }
+  img { max-width: 100%; display: block; }
+  a { color: var(--gold); }
+  h1, h2, h3 { font-family: 'Philosopher', Georgia, serif; line-height: 1.1; margin: 0; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 20px; }
+
+  /* --- nav --- */
+  .nav { position: fixed; inset: 0 0 auto; z-index: 20; transition: background .3s, box-shadow .3s; }
+  .nav.solid { background: rgba(11, 16, 38, .92); backdrop-filter: blur(8px); box-shadow: 0 1px 0 var(--line); }
+  .nav .wrap { display: flex; align-items: center; gap: 24px; height: 68px; }
+  .brand { display: flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-family: 'Philosopher', serif; font-weight: 700; font-size: 20px; }
+  .brand img { width: 38px; height: 38px; border-radius: 10px; }
+  .nav nav { margin-left: auto; display: flex; gap: 22px; }
+  .nav nav a { color: var(--muted); text-decoration: none; font-weight: 600; font-size: 15px; }
+  .nav nav a:hover { color: var(--gold); }
+  .nav .btn { padding: 10px 18px; font-size: 15px; }
+  @media (max-width: 760px) { .nav nav { display: none; } .nav .btn { margin-left: auto; } }
+
+  /* --- buttons --- */
+  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 15px 26px; border-radius: 999px; font-weight: 800; text-decoration: none; font-size: 17px; transition: transform .15s, box-shadow .15s, background .15s; border: 2px solid transparent; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-gold { background: var(--gold); color: #2a1a00; box-shadow: 0 8px 28px rgba(244, 197, 66, .28); }
+  .btn-gold:hover { box-shadow: 0 12px 34px rgba(244, 197, 66, .4); }
+  .btn-ghost { border-color: var(--line); color: var(--ink); background: rgba(11, 16, 38, .55); }
+  .btn-ghost:hover { border-color: var(--gold); }
+  .btn svg { width: 20px; height: 20px; }
+
+  /* --- hero --- */
+  .hero { position: relative; overflow: hidden; min-height: 100vh; min-height: 100svh; display: flex; align-items: center; padding: 110px 0 90px;
+    background: url('img/hero.jpg') 22% 30% / cover no-repeat; }
+  .hero::before { content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, rgba(11, 16, 38, .94) 0%, rgba(11, 16, 38, .7) 40%, rgba(11, 16, 38, .1) 70%),
+                linear-gradient(0deg, var(--night) 0%, transparent 30%); }
+  .hero .wrap { position: relative; width: 100%; }
+  .hero-text { max-width: 560px; }
+  @media (max-width: 420px) { .hero .eyebrow { font-size: 11px; letter-spacing: .08em; } }
+  .eyebrow { display: inline-block; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; font-size: 13px; color: var(--gold-soft);
+    border: 1px solid var(--line); padding: 6px 12px; border-radius: 999px; margin-bottom: 22px; background: rgba(11, 16, 38, .5); }
+  .hero h1 { font-size: clamp(48px, 8vw, 92px); color: var(--gold); text-shadow: 0 4px 24px rgba(0, 0, 0, .6); }
+  .hero h1 span { display: block; color: var(--paper); font-size: .52em; font-weight: 400; margin-top: 6px; }
+  .hero p.lead { font-size: clamp(18px, 2.2vw, 21px); color: #d6daea; margin: 22px 0 32px; max-width: 500px; }
+  .ctas { display: flex; flex-wrap: wrap; gap: 14px; }
+  .hero small { display: block; margin-top: 16px; color: var(--muted); font-size: 14px; }
+  @media (max-width: 980px) {
+    /* wąsko: wieża u góry, tekst pod nią */
+    .hero { background: url('img/hero_small.jpg') 53% 0 / auto 62% no-repeat, var(--night); align-items: flex-end; padding-top: 52vh; }
+    .hero::before { background: linear-gradient(0deg, var(--night) 42%, rgba(11, 16, 38, .55) 62%, rgba(11, 16, 38, 0) 80%); }
+  }
+  /* wisps */
+  .wisp { position: absolute; width: 10px; height: 10px; border-radius: 50%; background: radial-gradient(circle, #fff6c8 0%, #f4c542 40%, transparent 70%);
+    filter: blur(.5px); opacity: .0; animation: float 9s ease-in-out infinite; pointer-events: none; }
+  @keyframes float { 0% { transform: translate(0, 0); opacity: 0; } 20% { opacity: .9; } 50% { transform: translate(30px, -40px); } 80% { opacity: .7; } 100% { transform: translate(-10px, -90px); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .wisp { display: none; } html { scroll-behavior: auto; } .btn:hover { transform: none; } }
+
+  /* --- papercut edge --- */
+  .edge { height: 22px; background:
+      linear-gradient(135deg, var(--c1) 50%, transparent 50%) 0 0 / 22px 22px repeat-x,
+      linear-gradient(225deg, var(--c1) 50%, transparent 50%) 0 0 / 22px 22px repeat-x; background-color: var(--c2); }
+
+  section { padding: 96px 0; position: relative; }
+  .sec-title { text-align: center; max-width: 720px; margin: 0 auto 52px; }
+  .sec-title h2 { font-size: clamp(34px, 5vw, 52px); color: var(--paper); }
+  .sec-title p { color: var(--muted); margin: 14px 0 0; font-size: 18px; }
+  .kicker { color: var(--gold); font-weight: 800; letter-spacing: .14em; text-transform: uppercase; font-size: 13px; display: block; margin-bottom: 12px; }
+
+  /* --- stats --- */
+  .stats { background: var(--night-2); padding: 40px 0; }
+  .stats ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; text-align: center; }
+  .stats b { display: block; font-family: 'Philosopher', serif; font-size: 44px; color: var(--gold); line-height: 1; }
+  .stats span { color: var(--muted); font-weight: 600; font-size: 15px; }
+  @media (max-width: 760px) { .stats ul { grid-template-columns: repeat(2, 1fr); row-gap: 28px; } }
+
+  /* --- features --- */
+  .features { background: var(--night-2); }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  @media (max-width: 980px) { .grid4 { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .grid4 { grid-template-columns: 1fr; } }
+  .card { background: linear-gradient(180deg, var(--night-3), var(--night-2)); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px 24px; position: relative; overflow: hidden; }
+  .card img.ico { width: 72px; height: 72px; margin-bottom: 18px; filter: drop-shadow(0 6px 12px rgba(0, 0, 0, .5)); }
+  .card h3 { font-size: 24px; color: var(--paper); margin-bottom: 10px; }
+  .card p { margin: 0; color: var(--muted); font-size: 16px; }
+  .card .icons { display: flex; gap: 8px; margin-bottom: 18px; }
+  .card .icons img { width: 56px; height: 56px; }
+
+  /* --- split (night / stronghold) --- */
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+  .split.rev .media { order: 2; }
+  @media (max-width: 860px) { .split { grid-template-columns: 1fr; gap: 36px; } .split.rev .media { order: 0; } }
+  .split h2 { font-size: clamp(32px, 4.4vw, 46px); color: var(--paper); margin-bottom: 18px; }
+  .split p { color: #c9cee2; }
+  .split ul { padding-left: 0; list-style: none; margin: 22px 0 0; }
+  .split li { padding-left: 30px; position: relative; margin: 10px 0; color: #d6daea; }
+  .split li::before { content: ''; position: absolute; left: 4px; top: 9px; width: 10px; height: 10px; background: var(--gold); transform: rotate(45deg); border-radius: 2px; }
+  .phone { width: min(320px, 78vw); margin: 0 auto; border-radius: 34px; border: 8px solid #1c2448; outline: 2px solid var(--line);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, .6), 0 0 0 1px rgba(255, 255, 255, .04) inset; overflow: hidden; aspect-ratio: 9 / 16; background: #000; }
+  .phone img { width: 100%; height: 100%; object-fit: cover; }
+  .duo { display: flex; justify-content: center; align-items: flex-end; }
+  .duo .phone { width: min(260px, 44vw); }
+  .duo .phone:last-child { margin-left: -40px; transform: translateY(40px); }
+
+  /* --- bosses --- */
+  .bosses { background: radial-gradient(ellipse at 50% 0%, #3a1712 0%, var(--night) 60%); }
+  .boss-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; }
+  @media (max-width: 980px) { .boss-row { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 560px) { .boss-row { grid-template-columns: repeat(2, 1fr); } }
+  .boss { text-align: center; background: rgba(18, 26, 58, .6); border: 1px solid rgba(184, 56, 42, .45); border-radius: var(--radius); padding: 22px 16px 24px; transition: transform .2s, border-color .2s; }
+  .boss:hover { transform: translateY(-4px); border-color: var(--red); }
+  .boss .art { height: 150px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+  .boss .art img { max-height: 150px; width: auto; filter: drop-shadow(0 10px 18px rgba(0, 0, 0, .6)); }
+  .boss .circle { font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #ff9b85; }
+  .boss h3 { font-size: 24px; color: var(--paper); margin: 6px 0 8px; }
+  .boss p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.5; }
+  .creatures { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px; margin-top: 46px; align-items: flex-end; }
+  .creatures figure { margin: 0; text-align: center; color: var(--muted); font-size: 14px; }
+  .creatures img { height: 74px; width: auto; margin: 0 auto 6px; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .55)); }
+
+  /* --- gallery --- */
+  .gallery { display: flex; gap: 22px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 10px 20px 26px; margin: 0 -20px;
+    scrollbar-width: thin; scrollbar-color: var(--gold) transparent; }
+  .gallery .phone { flex: 0 0 auto; width: 250px; scroll-snap-align: center; margin: 0; }
+  @media (min-width: 1100px) { .gallery { justify-content: center; overflow: visible; } .gallery .phone { width: 160px; } }
+
+  /* --- fair --- */
+  .fair { background: var(--paper); color: #2a2216; }
+  .fair .sec-title h2 { color: #2a2216; }
+  .fair .sec-title p { color: #6b5d46; }
+  .fair .kicker { color: var(--red); }
+  .pledges { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 860px) { .pledges { grid-template-columns: 1fr; } }
+  .pledge { background: #fffaf0; border: 2px solid #e2d3b2; border-radius: var(--radius); padding: 26px; }
+  .pledge h3 { font-size: 23px; color: var(--red-deep); margin-bottom: 8px; }
+  .pledge p { margin: 0; color: #5a4c36; }
+
+  /* --- play / android --- */
+  .play { text-align: center; background: linear-gradient(180deg, var(--night) 0%, var(--forest) 140%); }
+  .play h2 { font-size: clamp(36px, 5.5vw, 58px); color: var(--gold); }
+  .play p { color: #d6daea; max-width: 620px; margin: 18px auto 32px; font-size: 19px; }
+  .play .ctas { justify-content: center; }
+  .play .tower { width: 132px; margin: 0 auto 26px; border-radius: 28px; outline: 2px solid var(--line); box-shadow: 0 14px 40px rgba(0, 0, 0, .6); }
+
+  /* --- faq --- */
+  .faq details { border-bottom: 1px solid var(--line); padding: 18px 4px; max-width: 780px; margin: 0 auto; }
+  .faq summary { cursor: pointer; font-weight: 800; font-size: 19px; color: var(--paper); list-style: none; display: flex; justify-content: space-between; gap: 18px; }
+  .faq summary::after { content: '+'; color: var(--gold); font-size: 26px; line-height: 1; }
+  .faq details[open] summary::after { content: '–'; }
+  .faq details p { color: var(--muted); margin: 12px 0 0; }
+
+  footer { border-top: 1px solid var(--line); padding: 36px 0 44px; color: var(--muted); font-size: 15px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 14px 28px; align-items: center; }
+  footer .links { margin-left: auto; display: flex; gap: 22px; flex-wrap: wrap; }
+  footer a { color: var(--muted); }
+  footer a:hover { color: var(--gold); }
+
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="img/app_icon.png" alt="">Watchtower</a>
+    <nav>
+      <a href="#features">Features</a>
+      <a href="#bosses">Bosses</a>
+      <a href="#screens">Screenshots</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-gold" href="play/">Play free</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero" id="hero">
+    <div class="wrap">
+      <div class="hero-text">
+        <span class="eyebrow">Idle tower defense · Slavic folklore</span>
+        <h1>Watchtower<span>Slavic Nights</span></h1>
+        <p class="lead">Night falls over the old forest. One wooden tower stands between the village and the creatures of legend. Hold it until dawn.</p>
+        <div class="ctas">
+          <a class="btn btn-gold" href="play/">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            Play in your browser
+          </a>
+          <a class="btn btn-ghost" href="#android">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.86 3.22a11.4 11.4 0 0 0-9.84 0L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>
+            Android beta
+          </a>
+        </div>
+        <small>Free · No account · Plays offline on Android</small>
+      </div>
+    </div>
+  </section>
+
+  <div class="stats">
+    <div class="wrap">
+      <ul>
+        <li><b>30</b><span>waves every night</span></li>
+        <li><b>5</b><span>circles of night</span></li>
+        <li><b>5</b><span>legendary bosses</span></li>
+        <li><b>1</b><span>finger to play</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <section class="features" id="features">
+    <div class="wrap">
+      <div class="sec-title reveal">
+        <span class="kicker">How it plays</span>
+        <h2>Short nights. Big decisions.</h2>
+        <p>Your tower fires on its own. You choose what makes it stronger – and when to call on the old gods.</p>
+      </div>
+      <div class="grid4">
+        <article class="card reveal"><img class="ico" src="img/r_ogien.png" alt=""><h3>Survive the night</h3><p>Thirty waves of drowners, strzygas, werewolves and leshies pour from the trees. Upgrade damage, range and HP as silver drops.</p></article>
+        <article class="card reveal"><div class="icons"><img src="img/r_grom.png" alt=""><img src="img/r_ziola.png" alt=""><img src="img/r_strzaly.png" alt=""></div><h3>Stack your runes</h3><p>At dusk and every three waves pick 1 of 3 runes. Fire, frost-herbs, criticals, extra arrows – they stack, so every run is different.</p></article>
+        <article class="card reveal"><div class="icons"><img src="img/p_grom.png" alt=""><img src="img/p_tarcza.png" alt=""><img src="img/p_wicher.png" alt=""></div><h3>Call the old gods</h3><p>Strike with Perun's Thunder, raise Mokosh's Shield, unleash Stribog's Gale. Timing a power right turns a lost night into dawn.</p></article>
+        <article class="card reveal"><img class="ico" src="img/b_kuznia.png" alt=""><h3>Grow the stronghold</h3><p>Between nights build up the forge, palisade, herbalist's hut and shrine – and watch your village rise. It even gathers silver while you're away.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <div class="edge" style="--c1: var(--night-2); --c2: var(--night);"></div>
+
+  <section>
+    <div class="wrap split">
+      <div class="media reveal"><div class="duo">
+        <div class="phone"><img src="img/shot_battle.jpg" alt="A night battle around the watchtower" loading="lazy"></div>
+        <div class="phone"><img src="img/shot_runes.jpg" alt="Choosing one of three runes" loading="lazy"></div>
+      </div></div>
+      <div class="reveal">
+        <span class="kicker">The night</span>
+        <h2>Every wave hits harder. So do you.</h2>
+        <p>Watchtower is a roguelite tower defense played with a single thumb. Runs last a few minutes, decisions come every few seconds, and nothing waits on timers.</p>
+        <ul>
+          <li>Speed the night up ×2 – or switch on Auto-battle and watch</li>
+          <li>Rune mastery carries over: your favourites get stronger for good</li>
+          <li>Daily quests, achievements and a login streak in the stronghold</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="bosses" id="bosses">
+    <div class="wrap">
+      <div class="sec-title reveal">
+        <span class="kicker">At the stroke of Midnight</span>
+        <h2>Five circles. Five legends.</h2>
+        <p>Reach dawn to unlock the next circle of night – stronger creatures, new enemies, bigger rewards, and a new boss waiting at wave 30.</p>
+      </div>
+      <div class="boss-row">
+        <article class="boss reveal"><div class="art"><img src="img/zmij_fly.png" alt="The Zmey"></div><span class="circle">Circle I</span><h3>The Zmey</h3><p>Takes to the sky when wounded, circles the tower and breathes fire.</p></article>
+        <article class="boss reveal"><div class="art"><img src="img/baba_jaga.png" alt="Baba Yaga"></div><span class="circle">Circle II</span><h3>Baba Yaga</h3><p>Vanishes and reappears, summons will-o'-wisps, goes berserk.</p></article>
+        <article class="boss reveal"><div class="art"><img src="img/marzanna.png" alt="Marzanna"></div><span class="circle">Circle III</span><h3>Marzanna</h3><p>Her frost slows your tower. Wounded, she raises an ice shield.</p></article>
+        <article class="boss reveal"><div class="art"><img src="img/licho_wielkie.png" alt="The Great Likho"></div><span class="circle">Circle IV</span><h3>Great Likho</h3><p>Snuffs out your runes from afar and splits into three.</p></article>
+        <article class="boss reveal"><div class="art"><img src="img/weles.png" alt="Veles"></div><span class="circle">Circle V</span><h3>Veles</h3><p>Lord of the underworld. A renewing shield and a storm of lightning.</p></article>
+      </div>
+      <div class="creatures reveal">
+        <figure><img src="img/utopiec.png" alt="">Drowner</figure>
+        <figure><img src="img/strzyga.png" alt="">Strzyga</figure>
+        <figure><img src="img/wilkolak.png" alt="">Werewolf</figure>
+        <figure><img src="img/leszy.png" alt="">Leshy</figure>
+        <figure><img src="img/ognik.png" alt="">Will-o'-wisp</figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="screens">
+    <div class="wrap">
+      <div class="sec-title reveal">
+        <span class="kicker">Screenshots</span>
+        <h2>Hand-cut by moonlight</h2>
+        <p>Paper craft art inspired by Slavic folk papercuts – every creature, rune and building layered like cut paper.</p>
+      </div>
+      <div class="gallery reveal">
+        <div class="phone"><img src="img/shot_title.jpg" alt="Title screen" loading="lazy"></div>
+        <div class="phone"><img src="img/shot_battle.jpg" alt="Battle" loading="lazy"></div>
+        <div class="phone"><img src="img/shot_boss_zmey.jpg" alt="The Zmey boss fight" loading="lazy"></div>
+        <div class="phone"><img src="img/shot_boss_marzanna.jpg" alt="Marzanna boss fight" loading="lazy"></div>
+        <div class="phone"><img src="img/shot_runes.jpg" alt="Rune choice" loading="lazy"></div>
+        <div class="phone"><img src="img/shot_stronghold.jpg" alt="The stronghold" loading="lazy"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="edge" style="--c1: var(--night); --c2: var(--paper);"></div>
+
+  <section class="fair">
+    <div class="wrap">
+      <div class="sec-title reveal">
+        <span class="kicker">Fair by design</span>
+        <h2>Earned, not bought.</h2>
+        <p>We want you to come back because the game is fun – not because of a timer or a slot machine.</p>
+      </div>
+      <div class="pledges">
+        <div class="pledge reveal"><h3>No loot boxes</h3><p>No gacha, no random paid rewards. Progress is deterministic and comes from playing.</p></div>
+        <div class="pledge reveal"><h3>Power is never for sale</h3><p>Amber only buys convenience and looks – tower skins, a revive, an extra reroll. Never tower strength.</p></div>
+        <div class="pledge reveal"><h3>Respects your time</h3><p>Nights last minutes, play one-handed, offline on Android. The stronghold keeps working while you're away.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="edge" style="--c1: var(--paper); --c2: var(--night);"></div>
+
+  <section class="play" id="android">
+    <div class="wrap">
+      <img class="tower" src="img/app_icon.png" alt="">
+      <h2>The night is coming.</h2>
+      <p>Play the full game in your browser right now – or join the Android beta on Google Play and help shape what comes next.</p>
+      <div class="ctas">
+        <a class="btn btn-gold" href="play/">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+          Play in your browser
+        </a>
+        <a class="btn btn-ghost" id="beta-link" href="mailto:mateusz.z.grabowski@gmail.com?subject=Watchtower%20Android%20beta">Join the Android beta</a>
+      </div>
+      <p style="font-size:15px;color:var(--muted);margin-top:18px">Android beta: send a short email and we'll add your Google account to the testers list.</p>
+    </div>
+  </section>
+
+  <section class="faq" id="faq">
+    <div class="wrap">
+      <div class="sec-title reveal"><span class="kicker">Questions</span><h2>FAQ</h2></div>
+      <details><summary>Is it free?</summary><p>Yes. The whole game is free to play – in the browser and on Android.</p></details>
+      <details><summary>Which platforms?</summary><p>Any modern browser (desktop or phone) and Android 7+. iOS may come later.</p></details>
+      <details><summary>Which languages?</summary><p>English, Polish, Spanish, Brazilian Portuguese, German, French, Italian, Russian, Turkish and Indonesian. Change it anytime in Settings.</p></details>
+      <details><summary>Does it work offline?</summary><p>The Android version plays fully offline. The browser version needs a connection to load, then runs locally – your progress is saved in that browser.</p></details>
+      <details><summary>Are there ads or purchases?</summary><p>Not in the current test version: the ad and shop buttons are simulated and cost nothing. Any future purchases will only cover cosmetics and convenience.</p></details>
+      <details><summary>What data do you collect?</summary><p>Only anonymous gameplay events (like "night started" or "wave reached") with a random install ID, to balance the game. No names, emails, location or ad IDs. Details in the <a href="privacy/">privacy policy</a>.</p></details>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Mateusz Grabowski Quality Assurance · Watchtower: Slavic Nights (Strażnica: Słowiańskie Noce)</span>
+    <div class="links">
+      <a href="play/">Play</a>
+      <a href="privacy/">Privacy policy</a>
+      <a href="mailto:mateusz.z.grabowski@gmail.com">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // przyciemniony pasek nawigacji po przewinięciu
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav.classList.toggle('solid', window.scrollY > 40);
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  // łagodne pojawianie się sekcji
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver((es) => es.forEach((e) => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }), { threshold: .12 }) : null;
+  document.querySelectorAll('.reveal').forEach((el) => io ? io.observe(el) : el.classList.add('in'));
+
+  // błędne ogniki nad lasem
+  const hero = document.getElementById('hero');
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    for (let i = 0; i < 14; i++) {
+      const w = document.createElement('span');
+      w.className = 'wisp';
+      w.style.left = (40 + Math.random() * 58) + '%';
+      w.style.top = (45 + Math.random() * 45) + '%';
+      w.style.animationDelay = (Math.random() * 9) + 's';
+      w.style.animationDuration = (7 + Math.random() * 6) + 's';
+      hero.appendChild(w);
+    }
+  }
+</script>
+</body>
+</html>
