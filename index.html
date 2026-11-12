@@ -127,8 +127,9 @@
 
   /* --- bosses --- */
   .bosses { background: radial-gradient(ellipse at 50% 0%, #3a1712 0%, var(--night) 60%); }
-  .boss-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; }
+  .boss-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
   @media (max-width: 980px) { .boss-row { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 760px) { .boss-row { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 560px) { .boss-row { grid-template-columns: repeat(2, 1fr); } }
   .boss { text-align: center; background: rgba(18, 26, 58, .6); border: 1px solid rgba(184, 56, 42, .45); border-radius: var(--radius); padding: 22px 16px 24px; transition: transform .2s, border-color .2s; }
   .boss:hover { transform: translateY(-4px); border-color: var(--red); }
@@ -224,8 +225,8 @@
     <div class="wrap">
       <ul>
         <li><b>30</b><span>waves every night</span></li>
-        <li><b>5</b><span>circles of night</span></li>
-        <li><b>5</b><span>legendary bosses</span></li>
+        <li><b>8</b><span>circles of night</span></li>
+        <li><b>8</b><span>legendary bosses</span></li>
         <li><b>1</b><span>finger to play</span></li>
       </ul>
     </div>
@@ -272,7 +273,7 @@
     <div class="wrap">
       <div class="sec-title reveal">
         <span class="kicker">At the stroke of Midnight</span>
-        <h2>Five circles. Five legends.</h2>
+        <h2>Eight circles. Eight legends.</h2>
         <p>Reach dawn to unlock the next circle of night – stronger creatures, new enemies, bigger rewards, and a new boss waiting at wave 30.</p>
       </div>
       <div class="boss-row">
@@ -281,6 +282,9 @@
         <article class="boss reveal"><div class="art"><img src="img/marzanna.png" alt="Marzanna"></div><span class="circle">Circle III</span><h3>Marzanna</h3><p>Her frost slows your tower. Wounded, she raises an ice shield.</p></article>
         <article class="boss reveal"><div class="art"><img src="img/licho_wielkie.png" alt="The Great Likho"></div><span class="circle">Circle IV</span><h3>Great Likho</h3><p>Snuffs out your runes from afar and splits into three.</p></article>
         <article class="boss reveal"><div class="art"><img src="img/weles.png" alt="Veles"></div><span class="circle">Circle V</span><h3>Veles</h3><p>Lord of the underworld. A renewing shield and a storm of lightning.</p></article>
+        <article class="boss reveal"><div class="art"><img src="img/planetnik.png" alt="Planetnik"></div><span class="circle">Circle VI</span><h3>Planetnik</h3><p>The storm-bringer. Rides the clouds, calls strzygas and rains hail.</p></article>
+        <article class="boss reveal"><div class="art"><img src="img/kosciej.png" alt="Koschei the Deathless"></div><span class="circle">Circle VII</span><h3>Koschei</h3><p>The Deathless. His shield keeps growing back – and his death hides in a needle.</p></article>
+        <article class="boss reveal"><div class="art"><img src="img/czarnobog.png" alt="Chernobog"></div><span class="circle">Circle VIII</span><h3>Chernobog</h3><p>The black god. Darkness shrinks your range, curses your tower and swallows the night.</p></article>
       </div>
       <div class="creatures reveal">
         <figure><img src="img/utopiec.png" alt="">Drowner</figure>
@@ -352,8 +356,8 @@
       <details><summary>Which platforms?</summary><p>Any modern browser (desktop or phone) and Android 7+. iOS may come later.</p></details>
       <details><summary>Which languages?</summary><p>English, Polish, Spanish, Brazilian Portuguese, German, French, Italian, Russian, Turkish and Indonesian. Change it anytime in Settings.</p></details>
       <details><summary>Does it work offline?</summary><p>The Android version plays fully offline. The browser version needs a connection to load, then runs locally – your progress is saved in that browser.</p></details>
-      <details><summary>Are there ads or purchases?</summary><p>Not in the current test version: the ad and shop buttons are simulated and cost nothing. Any future purchases will only cover cosmetics and convenience.</p></details>
-      <details><summary>What data do you collect?</summary><p>Only anonymous gameplay events (like "night started" or "wave reached") with a random install ID, to balance the game. No names, emails, location or ad IDs. Details in the <a href="privacy/">privacy policy</a>.</p></details>
+      <details><summary>Are there ads or purchases?</summary><p>On Android there are optional rewarded ads – you choose to watch one to revive the tower, reroll runes or double the night's rewards. No banners, no forced ads. Optional purchases (amber, a starter pack, a 30-day pass, no ads) only buy convenience and looks, never tower strength. The browser version has no ads or purchases.</p></details>
+      <details><summary>What data do you collect?</summary><p>Our own analytics collects only anonymous gameplay events (like "night started" or "wave reached") with a random install ID, to balance the game – no names, emails or location. On Android, ads are served by Google AdMob, which asks for your consent in the EU and may use the advertising ID. Details in the <a href="privacy/">privacy policy</a>.</p></details>
     </div>
   </section>
 </main>
